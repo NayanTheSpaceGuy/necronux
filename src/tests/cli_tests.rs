@@ -1,8 +1,9 @@
 #[cfg(test)]
-use crate::Cli;
+use clap::CommandFactory;
+#[cfg(test)]
+use crate::controller::Cli;
 
 #[test]
 pub fn verify_cli() {
-    use clap::CommandFactory;
     Cli::command().debug_assert();
 }

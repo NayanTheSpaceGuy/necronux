@@ -1,13 +1,11 @@
-mod cli;
+mod controller;
 mod commands;
+mod logger;
 mod handlers;
 mod tests;
 
-use clap::Parser;
-use cli::Cli;
-use handlers::handle_cli_operations;
+use controller::init_cli_controller;
 
 fn main() {
-    let cli = Cli::parse();
-    handle_cli_operations(&cli);
+    init_cli_controller();
 }

@@ -1,23 +1,23 @@
 use clap::{Args, Subcommand, ValueEnum};
 
-#[derive(Args)]
+#[derive(Args, Debug)]
 pub struct InfraCommand {
 
     #[command(subcommand)]
-    pub command: Option<InfraSubCommands>,
+    pub infra_subcommand: Option<InfraSubCommands>,
 
     /// See list of supported hosts for infra setup
-    #[arg(short = 'l', long, exclusive = true)]
-    pub list_hosts: bool,
+    #[arg(short = 'l', long = "list-hosts", exclusive = true)]
+    pub infra_list_hosts: bool,
 }
 
-#[derive(Subcommand)]
+#[derive(Subcommand, Debug)]
 pub enum InfraSubCommands {
     /// Run infra setups
     Run(InfraRunArgs),
 }
 
-#[derive(Args)]
+#[derive(Args, Debug)]
 pub struct InfraRunArgs {
 
     /// Specify the host
@@ -25,7 +25,8 @@ pub struct InfraRunArgs {
     pub host: Hosts,
 
     /// Specify the setup flag
-    #[arg(long,
+    #[arg(
+        long,
         required_if_eq("host", "trinity-helios"),
         hide_possible_values = true
     )]
