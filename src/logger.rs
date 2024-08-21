@@ -93,6 +93,9 @@ pub fn init_logger(args: &GlobalArgs) {
         }
     }
 
-    builder.init();
+    builder
+        .format_target(false)
+        .format_timestamp_millis()
+        .init();
     debug!("Initialized env_logger builder")
 }
