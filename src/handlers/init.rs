@@ -13,12 +13,18 @@ pub fn init_handlers(cli: &Cli) {
     handle_global_args(&cli.global_args);
 
     match &cli.necronux_command {
-        Some(NecronuxCommand::Infra(infra_command)) => handle_infra(&infra_command),
+        Some(NecronuxCommand::Infra(infra_command)) => {
+            info!("'infra' command was provided");
+            debug!("Handling infra command");
+            handle_infra(&infra_command);
+        },
         Some(NecronuxCommand::System(_)) => {
-            println!("System command not yet implemented");
+            info!("'system' command was provided");
+            info!("'system' command not yet implemented");
         },
         Some(NecronuxCommand::App(_)) => {
-            println!("App command not yet implemented");
+            info!("'app' command was provided");
+            info!("'app' command not yet implemented");
         },
         None => {
             info!("No subcommand was provided");
