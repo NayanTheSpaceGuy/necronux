@@ -1,7 +1,7 @@
 use log::{debug, info};
 use crate::{
     commands::lvl_1::infra::{Hosts, InfraRunArgs, SetupExtraFlags},
-    handlers::infra::infra_run_setup_part_one::trinity_helios_part_one
+    handlers::infra::run_setup_trinity_helios::{ trinity_helios_part_one, trinity_helios_part_two},
 };
 
 pub fn handle_infra_run(infra_run_arg: &InfraRunArgs) {
@@ -23,6 +23,7 @@ pub fn handle_infra_run(infra_run_arg: &InfraRunArgs) {
                         info!("Extra flag: part-two was provided");
                         info!("Setting up infrastructure for Trinity Helios");
                         info!("Running Trinity Helios setup part two");
+                        trinity_helios_part_two();
                     }
                 }
             }
