@@ -1,4 +1,4 @@
-use color_eyre::eyre::Result;
+use color_eyre::{config::HookBuilder, eyre::Result};
 use clap::Parser;
 use log::info;
 use crate::{
@@ -9,6 +9,8 @@ use crate::{
 
 pub fn init_cli_controller() -> Result<()> {
 
+    init_error_reporter()?;
+
     let cli = Cli::parse();
 
     init_logger(&cli.global_args)?;
@@ -16,6 +18,27 @@ pub fn init_cli_controller() -> Result<()> {
 
     info!("Initializing handlers");
     init_handlers(&cli)?;
+
+    Ok(())
+}
+
+fn init_error_reporter() -> Result<()> {
+
+    #[cfg(debug_assertions)]
+    {
+        std::env::set_var("RUST_BACKTRACE", "full");
+        HookBuilder::default()
+            .display_env_section(false)
+            .install()?;
+    }
+
+    #[cfg(not(debug_assertions))]
+    {
+        std::env::set_var("RUST_BACKTRACE", "0");
+        HookBuilder::default()
+            .display_env_section(false)
+            .install()?;
+    }
 
     Ok(())
 }
