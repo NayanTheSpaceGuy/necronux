@@ -1,22 +1,23 @@
+use color_eyre::eyre::Result;
 use clap::CommandFactory;
 use log::{debug, info};
 use crate::controller::Cli;
 use crate::commands::lvl_0::necronux::NecronuxCommand;
 use crate::handlers::{
     global_args::handle_global_args,
-    infra::handle_infra
+    infra::infra_root::handle_infra
 };
 
-pub fn init_handlers(cli: &Cli) {
+pub fn init_handlers(cli: &Cli) -> Result<()> {
 
     debug!("Initializing global arguments handler");
-    handle_global_args(&cli.global_args);
+    handle_global_args(&cli.global_args)?;
 
     match &cli.necronux_command {
         Some(NecronuxCommand::Infra(infra_command)) => {
             info!("'infra' command was provided");
             debug!("Handling infra command");
-            handle_infra(&infra_command);
+            handle_infra(&infra_command)?;
         },
         Some(NecronuxCommand::System(_)) => {
             info!("'system' command was provided");
@@ -29,7 +30,9 @@ pub fn init_handlers(cli: &Cli) {
         None => {
             info!("No subcommand was provided");
             info!("Displaying help message");
-            Cli::command().print_help().unwrap();
+            Cli::command().print_help()?;
         }
     }
+
+    Ok(())
 }

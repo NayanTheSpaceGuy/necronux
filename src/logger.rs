@@ -1,4 +1,5 @@
 use std::env;
+use color_eyre::eyre::Result;
 use clap::ValueEnum;
 use env_logger::{Builder, Env};
 use log::{debug, LevelFilter};
@@ -31,7 +32,7 @@ impl From<LogLevel> for LevelFilter {
     }
 }
 
-pub fn init_logger(args: &GlobalArgs) {
+pub fn init_logger(args: &GlobalArgs) -> Result<()> {
 
     let mut builder = Builder::new();
 
@@ -97,5 +98,7 @@ pub fn init_logger(args: &GlobalArgs) {
         .format_target(false)
         .format_timestamp_millis()
         .init();
-    debug!("Initialized env_logger builder")
+    debug!("Initialized env_logger builder");
+
+    Ok(())
 }

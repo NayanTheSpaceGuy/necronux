@@ -1,10 +1,11 @@
+use color_eyre::eyre::Result;
 use log::{debug, info};
 use crate::{
     commands::lvl_1::infra::{Hosts, InfraRunArgs, SetupExtraFlags},
     handlers::infra::run_setup_trinity_helios::{ trinity_helios_part_one, trinity_helios_part_two},
 };
 
-pub fn handle_infra_run(infra_run_arg: &InfraRunArgs) {
+pub fn handle_infra_run(infra_run_arg: &InfraRunArgs) -> Result<()> {
     debug!("Handling infra run command arguments");
 
     match infra_run_arg.host {
@@ -17,13 +18,13 @@ pub fn handle_infra_run(infra_run_arg: &InfraRunArgs) {
                         info!("Extra flag: part-one was provided");
                         info!("Setting up infrastructure for Trinity Helios");
                         info!("Running Trinity Helios setup part one");
-                        trinity_helios_part_one();
+                        trinity_helios_part_one()?;
                     }
                     SetupExtraFlags::PartTwo => {
                         info!("Extra flag: part-two was provided");
                         info!("Setting up infrastructure for Trinity Helios");
                         info!("Running Trinity Helios setup part two");
-                        trinity_helios_part_two();
+                        trinity_helios_part_two()?;
                     }
                 }
             }
@@ -33,4 +34,6 @@ pub fn handle_infra_run(infra_run_arg: &InfraRunArgs) {
             info!("Setting up infrastructure for Infinity");
         },
     }
+
+    Ok(())
 }

@@ -1,10 +1,11 @@
+use color_eyre::eyre::Result;
 use log::{debug, info};
 use crate::{
     commands::lvl_0::global_args::GlobalArgs,
     logger::LogLevel
 };
 
-pub fn handle_global_args(args: &GlobalArgs) {
+pub fn handle_global_args(args: &GlobalArgs) -> Result<()> {
 
     match args.log_level {
         Some(LogLevel::Off) => println!("Log level set to off"),
@@ -39,4 +40,6 @@ pub fn handle_global_args(args: &GlobalArgs) {
         true => info!("Trace mode enabled"),
         false => debug!("Trace mode not enabled"),
     }
+
+    Ok(())
 }

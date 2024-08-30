@@ -1,3 +1,4 @@
+use color_eyre::eyre::Result;
 use clap::Parser;
 use log::info;
 use crate::{
@@ -6,15 +7,17 @@ use crate::{
     handlers::init::init_handlers
 };
 
-pub fn init_cli_controller () {
+pub fn init_cli_controller() -> Result<()> {
 
     let cli = Cli::parse();
 
-    init_logger(&cli.global_args);
+    init_logger(&cli.global_args)?;
     info!("Initialized logger");
 
     info!("Initializing handlers");
-    init_handlers(&cli);
+    init_handlers(&cli)?;
+
+    Ok(())
 }
 
 #[derive(Parser, Debug)]
@@ -26,4 +29,15 @@ pub struct Cli {
 
     #[command(flatten)]
     pub global_args: GlobalArgs,
+}
+
+#[cfg(test)]
+mod tests {
+    use clap::CommandFactory;
+    use super::Cli;
+
+    #[test]
+    fn verify_cli() {
+        Cli::command().debug_assert();
+    }
 }
