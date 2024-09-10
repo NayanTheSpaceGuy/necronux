@@ -8,15 +8,15 @@ use crate::commands::lvl_1::{
 #[derive(Subcommand, Debug)]
 pub enum NecronuxCommand {
 
-    #[command(arg_required_else_help = true)]
+    #[command()]
     /// Setup infrastructure, resources and their configurations
     Infra(InfraCommand),
 
-    #[command(arg_required_else_help = true)]
+    #[command()]
     /// Setup system tweaks and execute system utilities
     System(SystemCommand),
 
-    #[command(arg_required_else_help = true)]
+    #[command()]
     /// Setup application or batch of applications with their configurations
     App(AppCommand),
 }
