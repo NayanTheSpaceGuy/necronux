@@ -5,16 +5,14 @@ pub struct InfraCommand {
 
     #[command(subcommand)]
     pub infra_subcommand: Option<InfraSubCommands>,
-
-    /// See list of supported hosts for infra setup
-    #[arg(short = 'l', long = "list-hosts", exclusive = true)]
-    pub infra_list_hosts: bool,
 }
 
 #[derive(Subcommand, Debug)]
 pub enum InfraSubCommands {
     /// Run infra setups
     Run(InfraRunArgs),
+    /// See list of supported hosts for infra setup
+    ListHosts,
 }
 
 #[derive(Args, Debug)]
