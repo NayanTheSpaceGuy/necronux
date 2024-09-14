@@ -1,0 +1,23 @@
+name: Test
+
+on:
+  push:
+    branches: ["master", "develop"]
+  pull_request:
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  rusttest:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Rust env
+        uses: "./.github/actions/setup-rust-env"
+
+      - name: Run cargo test
+        run: cargo test --workspace
