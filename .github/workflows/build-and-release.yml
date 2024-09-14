@@ -4,6 +4,8 @@ on:
   workflow_dispatch:
   pull_request:
     branches: ["main", "develop"]
+    paths:
+      - 'Cargo.toml'
 
 permissions:
   contents: write
