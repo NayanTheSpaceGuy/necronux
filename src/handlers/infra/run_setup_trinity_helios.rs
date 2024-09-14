@@ -3,6 +3,11 @@ use log::debug;
 use std::{fs::Permissions, os::unix::fs::PermissionsExt, path::PathBuf, process::Command};
 
 pub fn trinity_helios_part_one() -> Result<()> {
+    // Check if the OS is Linux before executing the script
+    if std::env::consts::OS != "linux" {
+        return Ok(()); // Skip execution if not on Linux
+    }
+
     let project_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     let script_path = project_root.join("src/scripts/infra/trinity_helios_setup_part_one.sh");
 
@@ -30,6 +35,11 @@ pub fn trinity_helios_part_one() -> Result<()> {
 }
 
 pub fn trinity_helios_part_two() -> Result<()> {
+    // Check if the OS is Linux before executing the script
+    if std::env::consts::OS != "linux" {
+        return Ok(()); // Skip execution if not on Linux
+    }
+
     let project_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     let script_path = project_root.join("src/scripts/infra/trinity_helios_setup_part_two.sh");
 
