@@ -1,0 +1,174 @@
+name: Build & Release
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: ["main", "develop"]
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build
+    runs-on: ${{ matrix.build.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        build:
+          - {
+              NAME: linux-x64,
+              OS: ubuntu-24.04,
+              TARGET: x86_64-unknown-linux-gnu,
+            }
+          - {
+              NAME: windows-x64,
+              OS: windows-2022,
+              TARGET: x86_64-pc-windows-msvc,
+            }
+          - {
+              NAME: windows-arm64,
+              OS: windows-2022,
+              TARGET: aarch64-pc-windows-msvc,
+            }
+          - {
+              NAME: darwin-x64,
+              OS: macos-14,
+              TARGET: x86_64-apple-darwin,
+            }
+          - {
+              NAME: darwin-arm64,
+              OS: macos-14,
+              TARGET: aarch64-apple-darwin,
+            }
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Rust env
+        uses: "./.github/actions/setup-rust-env"
+
+      - name: Run cargo build
+        run: cargo build --release --locked --target ${{ matrix.build.TARGET }}
+
+      - name: Rename necronux binary
+        shell: bash
+        run: |
+          binary_name="necronux"
+
+          extension=""
+          # windows binaries have ".exe" extension
+          if [[ "${{ matrix.build.OS }}" == *"windows"* ]]; then
+            extension=".exe"
+          fi
+
+          mkdir bin
+          cp "target/${{ matrix.build.TARGET }}/release/${binary_name}" "bin/${binary_name}-${{ matrix.build.NAME }}${extension}"
+
+      - name: Upload binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: built-binaries
+          path: bin/*
+
+  stable-release:
+    name: Release
+    runs-on: ubuntu-24.04
+    needs: build
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Check if release should be created
+        shell: bash
+        run: |
+          set -o pipefail
+
+          RELEASE_VERSION=v$(awk -F ' = ' '$1 ~ /version/ { gsub(/["]/, "", $2); printf("%s",$2) }' Cargo.toml)
+          OLD_VERSION=$( curl -s --fail-with-body https://api.github.com/repos/NayanTheSpaceGuy/necronux/releases/latest | jq -r '.tag_name' )
+
+          echo "RELEASE_VERSION=$RELEASE_VERSION" >> $GITHUB_ENV
+          echo "$OLD_VERSION -> $RELEASE_VERSION"
+
+          if [[ "$RELEASE_VERSION" == "$OLD_VERSION" ]] || \
+            ! [[ "$OLD_VERSION" =~ ^v[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9]+)?$ ]] || \
+            ! [[ "$RELEASE_VERSION" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "SHOULD_RELEASE=no" >> $GITHUB_ENV
+          else
+            git tag "$RELEASE_VERSION"
+            git push -u origin "$RELEASE_VERSION"
+            echo "SHOULD_RELEASE=yes" >> $GITHUB_ENV
+          fi
+
+      - name: Download binaries
+        uses: actions/download-artifact@v4
+        if: env.SHOULD_RELEASE == 'yes'
+        with:
+          name: built-binaries
+          path: bin
+
+      - name: Publish release
+        uses: softprops/action-gh-release@v2
+        if: env.SHOULD_RELEASE == 'yes'
+        with:
+          files: bin/*
+          tag_name: ${{ env.RELEASE_VERSION }}
+          fail_on_unmatched_files: true
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+
+  pre-release:
+    name: Pre-Release
+    runs-on: ubuntu-24.04
+    needs: build
+    if: github.ref == 'refs/heads/develop'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Check if pre-release should be created
+        shell: bash
+        run: |
+          set -o pipefail
+
+          PRE_RELEASE_VERSION=v$(awk -F ' = ' '$1 ~ /version/ { gsub(/["]/, "", $2); printf("%s",$2) }' Cargo.toml)
+          OLD_VERSION=$( curl -s --fail-with-body https://api.github.com/repos/NayanTheSpaceGuy/necronux/releases/latest | jq -r '.tag_name' )
+
+          echo "PRE_RELEASE_VERSION=$PRE_RELEASE_VERSION" >> $GITHUB_ENV
+          echo "$OLD_VERSION -> $PRE_RELEASE_VERSION"
+
+          if [[ "$PRE_RELEASE_VERSION" == "$OLD_VERSION" ]] || \
+            ! [[ "$OLD_VERSION" =~ ^v[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9]+)?$ ]] || \
+            ! [[ "$PRE_RELEASE_VERSION" =~ ^v[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9]+)$ ]]; then
+            echo "SHOULD_PRE_RELEASE=no" >> $GITHUB_ENV
+          else
+            git tag "$PRE_RELEASE_VERSION"
+            git push -u origin "$PRE_RELEASE_VERSION"
+            echo "SHOULD_PRE_RELEASE=yes" >> $GITHUB_ENV
+          fi
+
+      - name: Download binaries
+        uses: actions/download-artifact@v4
+        if: env.SHOULD_PRE_RELEASE == 'yes'
+        with:
+          name: built-binaries
+          path: bin
+
+      - name: Publish pre-release
+        uses: softprops/action-gh-release@v2
+        if: env.SHOULD_PRE_RELEASE == 'yes'
+        with:
+          files: bin/*
+          tag_name: ${{ env.PRE_RELEASE_VERSION }}
+          fail_on_unmatched_files: true
+          generate_release_notes: true
+          prerelease: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
