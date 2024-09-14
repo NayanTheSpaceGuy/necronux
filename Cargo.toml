@@ -3,6 +3,7 @@ name = "necronux"
 version = "0.1.0"
 authors = ["Nayan (NayanTheSpaceGuy) <nayantsg@proton.me>"]
 edition = "2021"
+homepage = "https://github.com/NayanTheSpaceGuy/necronux"
 
 [dependencies]
 clap = { version = "4.5.17", features = ["derive", "cargo"] }
