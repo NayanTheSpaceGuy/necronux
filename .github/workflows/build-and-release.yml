@@ -111,6 +111,7 @@ jobs:
         with:
           pattern: built-binaries-${{ github.run_id }}-*
           path: bin
+          merge-multiple: true
           
       - name: Publish release
         uses: softprops/action-gh-release@v2
@@ -162,6 +163,7 @@ jobs:
         with:
           pattern: built-binaries-${{ github.run_id }}-*
           path: bin
+          merge-multiple: true
 
       - name: Publish pre-release
         uses: softprops/action-gh-release@v2
