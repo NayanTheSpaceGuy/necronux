@@ -90,7 +90,7 @@ jobs:
           set -o pipefail
 
           RELEASE_VERSION=v$(awk -F ' = ' '$1 ~ /version/ { gsub(/["]/, "", $2); printf("%s",$2) }' Cargo.toml)
-          OLD_VERSION=$( curl -s --fail-with-body https://api.github.com/repos/NayanTheSpaceGuy/necronux/releases/latest | jq -r '.tag_name' )
+          OLD_VERSION=$( curl -s --fail-with-body https://api.github.com/repos/NayanTheSpaceGuy/necronux/releases | jq -r '.[0].tag_name' )
 
           echo "RELEASE_VERSION=$RELEASE_VERSION" >> $GITHUB_ENV
           echo "$OLD_VERSION -> $RELEASE_VERSION"
@@ -141,7 +141,7 @@ jobs:
           set -o pipefail
 
           PRE_RELEASE_VERSION=v$(awk -F ' = ' '$1 ~ /version/ { gsub(/["]/, "", $2); printf("%s",$2) }' Cargo.toml)
-          OLD_VERSION=$( curl -s --fail-with-body https://api.github.com/repos/NayanTheSpaceGuy/necronux/releases/latest | jq -r '.tag_name' )
+          OLD_VERSION=$( curl -s --fail-with-body https://api.github.com/repos/NayanTheSpaceGuy/necronux/releases | jq -r '.[0].tag_name' )
 
           echo "PRE_RELEASE_VERSION=$PRE_RELEASE_VERSION" >> $GITHUB_ENV
           echo "$OLD_VERSION -> $PRE_RELEASE_VERSION"
