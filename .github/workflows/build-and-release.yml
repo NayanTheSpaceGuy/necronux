@@ -68,9 +68,9 @@ jobs:
           cp "target/${{ matrix.build.TARGET }}/release/${binary_name}" "bin/${binary_name}-${{ matrix.build.NAME }}${extension}"
 
       - name: Upload binary
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: built-binaries
+          name: built-binaries-${{ github.run_id }}-${{ matrix.build.NAME }}
           path: bin/*
 
   stable-release:
