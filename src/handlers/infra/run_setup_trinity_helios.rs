@@ -1,13 +1,10 @@
 use color_eyre::eyre::{eyre, Result};
 use log::debug;
-use std::{fs::Permissions, os::unix::fs::PermissionsExt, path::PathBuf, process::Command};
+#[cfg(unix)]
+use std::os::unix::fs::PermissionsExt;
+use std::{fs::Permissions, path::PathBuf, process::Command};
 
 pub fn trinity_helios_part_one() -> Result<()> {
-    // Check if the OS is Linux before executing the script
-    if std::env::consts::OS != "linux" {
-        return Ok(()); // Skip execution if not on Linux
-    }
-
     let project_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     let script_path = project_root.join("src/scripts/infra/trinity_helios_setup_part_one.sh");
 
@@ -15,8 +12,16 @@ pub fn trinity_helios_part_one() -> Result<()> {
         "Attempting to change permissions of script: {:?}",
         script_path
     );
-    std::fs::set_permissions(&script_path, Permissions::from_mode(0o755))?;
-    debug!("Successfully changed permissions of the script");
+
+    #[cfg(unix)]
+    {
+        std::fs::set_permissions(&script_path, Permissions::from_mode(0o755))?;
+        debug!("Successfully changed permissions of the script");
+    }
+    #[cfg(windows)]
+    {
+        println!("Permission setting is not implemented yet for Windows.");
+    }
 
     debug!("Preparing to run trinity_helios_part_one script");
     let script_str = script_path
@@ -47,8 +52,16 @@ pub fn trinity_helios_part_two() -> Result<()> {
         "Attempting to change permissions of script: {:?}",
         script_path
     );
-    std::fs::set_permissions(&script_path, Permissions::from_mode(0o755))?;
-    debug!("Successfully changed permissions of the script");
+
+    #[cfg(unix)]
+    {
+        std::fs::set_permissions(&script_path, Permissions::from_mode(0o755))?;
+        debug!("Successfully changed permissions of the script");
+    }
+    #[cfg(windows)]
+    {
+        println!("Permission setting is not implemented yet for Windows.");
+    }
 
     debug!("Preparing to run trinity_helios_part_two script");
     let script_str = script_path
