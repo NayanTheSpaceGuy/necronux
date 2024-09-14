@@ -2,7 +2,6 @@ use clap::{Args, Subcommand, ValueEnum};
 
 #[derive(Args, Debug)]
 pub struct InfraCommand {
-
     #[command(subcommand)]
     pub infra_subcommand: Option<InfraSubCommands>,
 }
@@ -17,7 +16,6 @@ pub enum InfraSubCommands {
 
 #[derive(Args, Debug)]
 pub struct InfraRunArgs {
-
     /// Specify the host
     #[arg(long, hide_possible_values = true)]
     pub host: Hosts,

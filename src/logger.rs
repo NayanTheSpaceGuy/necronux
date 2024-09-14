@@ -1,10 +1,9 @@
+use crate::controller::Cli;
 use color_eyre::eyre::Result;
 use env_logger::{Builder, Env};
 use log::{debug, LevelFilter};
-use crate::controller::Cli;
 
 pub fn init_logger(cli: &Cli) -> Result<()> {
-
     let mut builder = Builder::new();
 
     let log_level_env_var = Env::default()
@@ -14,7 +13,9 @@ pub fn init_logger(cli: &Cli) -> Result<()> {
     builder.filter_level(LevelFilter::Warn);
     builder.parse_env(log_level_env_var);
     match cli.verbose.is_present() {
-        true => { builder.filter_level(cli.verbose.log_level_filter()); },
+        true => {
+            builder.filter_level(cli.verbose.log_level_filter());
+        }
         false => {}
     }
 

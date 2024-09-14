@@ -1,12 +1,11 @@
-use color_eyre::eyre::Result;
-use log::{info, debug};
 use crate::{
     commands::lvl_1::infra::{Hosts, InfraRunArgs, SetupExtraFlags},
-    handlers::infra::run_setup_trinity_helios::{ trinity_helios_part_one, trinity_helios_part_two},
+    handlers::infra::run_setup_trinity_helios::{trinity_helios_part_one, trinity_helios_part_two},
 };
+use color_eyre::eyre::Result;
+use log::{debug, info};
 
 pub fn handle_infra_run(infra_run_arg: &InfraRunArgs) -> Result<()> {
-
     match infra_run_arg.host {
         Hosts::TrinityHelios => {
             info!("Host: trinity-helios was provided");
@@ -27,12 +26,12 @@ pub fn handle_infra_run(infra_run_arg: &InfraRunArgs) -> Result<()> {
                     }
                 }
             }
-        },
+        }
         Hosts::Infinity => {
             info!("Host: infinity was provided");
             info!("Setting up infrastructure for Infinity");
             info!("Infinity setup not implemented yet");
-        },
+        }
     }
 
     Ok(())

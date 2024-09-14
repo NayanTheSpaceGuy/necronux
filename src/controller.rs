@@ -1,15 +1,12 @@
-use color_eyre::{config::HookBuilder, eyre::Result};
+use crate::{
+    commands::lvl_0::necronux::NecronuxCommand, handlers::init::init_handlers, logger::init_logger,
+};
 use clap::Parser;
 use clap_verbosity_flag::{Verbosity, WarnLevel};
+use color_eyre::{config::HookBuilder, eyre::Result};
 use log::{debug, info};
-use crate::{
-    commands::lvl_0::necronux::NecronuxCommand,
-    logger::init_logger,
-    handlers::init::init_handlers
-};
 
 fn init_error_reporter() -> Result<()> {
-
     #[cfg(debug_assertions)]
     {
         std::env::set_var("RUST_BACKTRACE", "full");
@@ -32,7 +29,6 @@ fn init_error_reporter() -> Result<()> {
 #[derive(Parser, Debug)]
 #[command(version, about, long_about = None)]
 pub struct Cli {
-
     #[command(subcommand)]
     pub necronux_command: Option<NecronuxCommand>,
 
@@ -41,7 +37,6 @@ pub struct Cli {
 }
 
 pub fn init_cli_controller() -> Result<()> {
-
     init_error_reporter()?;
     let cli = Cli::parse();
     init_logger(&cli)?;
@@ -58,8 +53,8 @@ pub fn init_cli_controller() -> Result<()> {
 
 #[cfg(test)]
 mod tests {
-    use clap::CommandFactory;
     use super::Cli;
+    use clap::CommandFactory;
 
     #[test]
     fn verify_cli() {

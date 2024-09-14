@@ -1,13 +1,8 @@
+use crate::commands::lvl_1::{app::AppCommand, infra::InfraCommand, system::SystemCommand};
 use clap::Subcommand;
-use crate::commands::lvl_1::{
-    app::AppCommand,
-    infra::InfraCommand,
-    system::SystemCommand
-};
 
 #[derive(Subcommand, Debug)]
 pub enum NecronuxCommand {
-
     #[command()]
     /// Setup infrastructure, resources and their configurations
     Infra(InfraCommand),
