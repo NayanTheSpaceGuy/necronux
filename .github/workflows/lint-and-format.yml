@@ -1,0 +1,36 @@
+name: Lint and Format
+
+on:
+  push:
+    branches: ["master", "develop"]
+  pull_request:
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  clippy:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Rust env
+        uses: ./.github/actions/setup-rust-env
+
+      - name: Run cargo clippy
+        run: cargo clippy -- -Dclippy::all -D warnings
+
+  rustfmt:
+    name: Format
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Rust env
+        uses: ./.github/actions/setup-rust-env
+
+      - name: Run cargo fmt
+        run: cargo fmt --check
