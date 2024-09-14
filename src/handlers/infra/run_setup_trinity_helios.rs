@@ -1,8 +1,8 @@
 use color_eyre::eyre::{eyre, Result};
 use log::debug;
 #[cfg(unix)]
-use std::os::unix::fs::PermissionsExt;
-use std::{fs::Permissions, path::PathBuf, process::Command};
+use std::{fs::Permissions, os::unix::fs::PermissionsExt};
+use std::{path::PathBuf, process::Command};
 
 pub fn trinity_helios_part_one() -> Result<()> {
     let project_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
