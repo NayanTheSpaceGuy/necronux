@@ -1,0 +1,30 @@
+name: LGTM Self Approve
+
+on:
+  issue_comment:
+    types: [created]
+  pull_request_review:
+    types: [edited]
+  pull_request_review_comment:
+    types: [created]
+
+jobs:
+  auto-approve:
+    name: Approve PR Review
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+    - uses: actions/github-script@v6
+      name: Approve Review by NayanTheSpaceGuy
+      if: github.actor == 'NayanTheSpaceGuy' && contains(github.event.comment.body, 'LGTM')
+      with:
+        script: |
+          github.rest.pulls.createReview({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            pull_number: context.issue.number,
+            review_id: 1,
+            event: 'APPROVE',
+            body: 'Let`s get this merged then.'
+          })
