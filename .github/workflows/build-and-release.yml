@@ -126,7 +126,10 @@ jobs:
         shell: bash
         run: |
           mkdir -p bin
-          tar -xzvf built-binaries-*.tar.gz -C bin
+          for tar_file in built-binaries-*.tar.gz; do
+            echo "Extracting $tar_file"
+            tar -xzvf $tar_file -C bin
+          done
           
       - name: Publish release
         uses: softprops/action-gh-release@v2
@@ -183,7 +186,10 @@ jobs:
         shell: bash
         run: |
           mkdir -p bin
-          tar -xzvf built-binaries-*.tar.gz -C bin
+          for tar_file in built-binaries-*.tar.gz; do
+            echo "Extracting $tar_file"
+            tar -xzvf $tar_file -C bin
+          done
 
       - name: Publish pre-release
         uses: softprops/action-gh-release@v2
