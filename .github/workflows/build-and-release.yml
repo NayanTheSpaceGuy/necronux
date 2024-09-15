@@ -125,9 +125,8 @@ jobs:
         if: env.SHOULD_RELEASE == 'yes'
         shell: bash
         run: |
-          for tar_file in built-binaries-${{ github.run_id }}-*.tar.gz; do
-            tar -xzvf $tar_file -C bin
-          done
+          mkdir -p bin
+          tar -xzvf built-binaries-*.tar.gz -C bin
           
       - name: Publish release
         uses: softprops/action-gh-release@v2
@@ -183,9 +182,8 @@ jobs:
         if: env.SHOULD_PRE_RELEASE == 'yes'
         shell: bash
         run: |
-          for tar_file in built-binaries-${{ github.run_id }}-*.tar.gz; do
-            tar -xzvf $tar_file -C bin
-          done
+          mkdir -p bin
+          tar -xzvf built-binaries-*.tar.gz -C bin
 
       - name: Publish pre-release
         uses: softprops/action-gh-release@v2
