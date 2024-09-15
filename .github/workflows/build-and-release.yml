@@ -71,11 +71,16 @@ jobs:
         if: "! contains(matrix.build.OS, 'windows')"
         run: chmod +x bin/*
 
-      - name: Upload binary
+      - name: Tar the binaries
+        shell: bash
+        run: |
+          tar -czvf built-binaries-${{ github.run_id }}-${{ matrix.build.NAME }}.tar.gz -C bin .
+
+      - name: Upload binary tar
         uses: actions/upload-artifact@v4
         with:
           name: built-binaries-${{ github.run_id }}-${{ matrix.build.NAME }}
-          path: bin/*
+          path: built-binaries-${{ github.run_id }}-${{ matrix.build.NAME }}.tar.gz
 
   stable-release:
     name: Release
@@ -113,9 +118,17 @@ jobs:
         uses: actions/download-artifact@v4
         if: env.SHOULD_RELEASE == 'yes'
         with:
-          pattern: built-binaries-${{ github.run_id }}-*
-          path: bin
+          pattern: built-binaries-${{ github.run_id }}-*.tar.gz
+          path: .
           merge-multiple: true
+
+      - name: Extract binaries
+        if: env.SHOULD_RELEASE == 'yes'
+        shell: bash
+        run: |
+          for tar_file in built-binaries-${{ github.run_id }}-*.tar.gz; do
+            tar -xzvf $tar_file -C bin
+          done
           
       - name: Publish release
         uses: softprops/action-gh-release@v2
@@ -127,7 +140,6 @@ jobs:
           generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
 
   pre-release:
     name: Pre-Release
@@ -165,9 +177,17 @@ jobs:
         uses: actions/download-artifact@v4
         if: env.SHOULD_PRE_RELEASE == 'yes'
         with:
-          pattern: built-binaries-${{ github.run_id }}-*
-          path: bin
+          pattern: built-binaries-${{ github.run_id }}-*.tar.gz
+          path: .
           merge-multiple: true
+
+      - name: Extract binaries
+        if: env.SHOULD_PRE_RELEASE == 'yes'
+        shell: bash
+        run: |
+          for tar_file in built-binaries-${{ github.run_id }}-*.tar.gz; do
+            tar -xzvf $tar_file -C bin
+          done
 
       - name: Publish pre-release
         uses: softprops/action-gh-release@v2
