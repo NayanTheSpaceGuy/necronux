@@ -4,7 +4,13 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+    labels:
+      - "A - rust"
+      - "A - dependencies"
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "weekly"
+    labels:
+      - "A - ci / github-actions"
+      - "A - dependencies"
