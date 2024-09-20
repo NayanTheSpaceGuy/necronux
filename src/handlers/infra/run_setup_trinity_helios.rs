@@ -26,6 +26,7 @@ pub fn trinity_helios_part_two() -> Result<()> {
     }
 }
 
+#[cfg(unix)]
 fn setup_environment(part: &str) -> Result<()> {
     let config_dir: PathBuf =
         env::var("XDG_CONFIG_HOME")
@@ -53,6 +54,7 @@ fn setup_environment(part: &str) -> Result<()> {
     Ok(())
 }
 
+#[cfg(unix)]
 fn setup_directories(project_dir: &PathBuf, dot_dir: &PathBuf) -> Result<()> {
     if !project_dir.exists() {
         std::fs::create_dir_all(project_dir)?;
@@ -85,6 +87,7 @@ fn setup_directories(project_dir: &PathBuf, dot_dir: &PathBuf) -> Result<()> {
     Ok(())
 }
 
+#[cfg(unix)]
 fn clone_repository(dot_dir: &PathBuf) -> Result<()> {
     let repo_url = "https://github.com/NayanTheSpaceGuy/dotlab.git";
     let git_clone_status = Command::new("git")
@@ -104,6 +107,7 @@ fn clone_repository(dot_dir: &PathBuf) -> Result<()> {
     Ok(())
 }
 
+#[cfg(unix)]
 fn execute_script(script_path: &PathBuf) -> Result<()> {
     debug!(
         "Attempting to change permissions of script: {:?}",
