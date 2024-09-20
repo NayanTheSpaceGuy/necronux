@@ -5,43 +5,49 @@ use std::{env, path::PathBuf, process::Command};
 use std::{fs::Permissions, os::unix::fs::PermissionsExt};
 
 pub fn trinity_helios_part_one() -> Result<()> {
-    setup_environment("one")
-}
-
-pub fn trinity_helios_part_two() -> Result<()> {
-    setup_environment("two")
-}
-
-fn setup_environment(part: &str) -> Result<()> {
     #[cfg(unix)]
     {
-        let config_dir: PathBuf =
-            env::var("XDG_CONFIG_HOME")
-                .map(PathBuf::from)
-                .or_else(|_| -> Result<PathBuf> {
-                    let home_dir = env::var("HOME")
-                        .map(PathBuf::from)
-                        .map_err(|_| eyre!("HOME environment variable not set"))?;
-                    Ok(home_dir.join(".config"))
-                })?;
-
-        let project_dir = config_dir.join("necronux");
-        let dot_dir = project_dir.join("dot");
-
-        setup_directories(&project_dir, &dot_dir)?;
-        clone_repository(&dot_dir)?;
-
-        let script_path = dot_dir.join(format!(
-            "homelab/scripts/trinity_helios_setup_part_{}.sh",
-            part
-        ));
-        execute_script(&script_path)?;
+        setup_environment("one")
     }
-
     #[cfg(windows)]
     {
         println!("This setup is not supported yet for Windows.");
     }
+}
+
+pub fn trinity_helios_part_two() -> Result<()> {
+    #[cfg(unix)]
+    {
+        setup_environment("two")
+    }
+    #[cfg(windows)]
+    {
+        println!("This setup is not supported yet for Windows.");
+    }
+}
+
+fn setup_environment(part: &str) -> Result<()> {
+    let config_dir: PathBuf =
+        env::var("XDG_CONFIG_HOME")
+            .map(PathBuf::from)
+            .or_else(|_| -> Result<PathBuf> {
+                let home_dir = env::var("HOME")
+                    .map(PathBuf::from)
+                    .map_err(|_| eyre!("HOME environment variable not set"))?;
+                Ok(home_dir.join(".config"))
+            })?;
+
+    let project_dir = config_dir.join("necronux");
+    let dot_dir = project_dir.join("dot");
+
+    setup_directories(&project_dir, &dot_dir)?;
+    clone_repository(&dot_dir)?;
+
+    let script_path = dot_dir.join(format!(
+        "homelab/scripts/trinity_helios_setup_part_{}.sh",
+        part
+    ));
+    execute_script(&script_path)?;
 
     debug!("Script executed successfully");
     Ok(())
