@@ -24,9 +24,28 @@ pub fn trinity_helios_part_one() -> Result<()> {
         }
 
         let dot_dir = project_dir.join("dot");
-        if !dot_dir.exists() {
-            std::fs::create_dir_all(&dot_dir)?;
-            debug!("Created 'dot' directory at {:?}", dot_dir);
+
+        match (
+            dot_dir.exists(),
+            dot_dir
+                .read_dir()
+                .map(|mut d| d.next().is_some())
+                .unwrap_or(false),
+        ) {
+            (true, true) => {
+                std::fs::remove_dir_all(&dot_dir)?;
+                debug!(
+                    "Removed existing non-empty 'dot' directory at {:?}",
+                    dot_dir
+                );
+                std::fs::create_dir_all(&dot_dir)?;
+                debug!("Created new 'dot' directory at {:?}", dot_dir);
+            }
+            (false, _) => {
+                std::fs::create_dir_all(&dot_dir)?;
+                debug!("Created 'dot' directory at {:?}", dot_dir);
+            }
+            _ => {}
         }
 
         let repo_url = "https://github.com/NayanTheSpaceGuy/dotlab.git";
@@ -106,9 +125,28 @@ pub fn trinity_helios_part_two() -> Result<()> {
         }
 
         let dot_dir = project_dir.join("dot");
-        if !dot_dir.exists() {
-            std::fs::create_dir_all(&dot_dir)?;
-            debug!("Created 'dot' directory at {:?}", dot_dir);
+
+        match (
+            dot_dir.exists(),
+            dot_dir
+                .read_dir()
+                .map(|mut d| d.next().is_some())
+                .unwrap_or(false),
+        ) {
+            (true, true) => {
+                std::fs::remove_dir_all(&dot_dir)?;
+                debug!(
+                    "Removed existing non-empty 'dot' directory at {:?}",
+                    dot_dir
+                );
+                std::fs::create_dir_all(&dot_dir)?;
+                debug!("Created new 'dot' directory at {:?}", dot_dir);
+            }
+            (false, _) => {
+                std::fs::create_dir_all(&dot_dir)?;
+                debug!("Created 'dot' directory at {:?}", dot_dir);
+            }
+            _ => {}
         }
 
         let repo_url = "https://github.com/NayanTheSpaceGuy/dotlab.git";
