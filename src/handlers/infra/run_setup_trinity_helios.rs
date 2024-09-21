@@ -1,5 +1,6 @@
 #[cfg(unix)]
-use color_eyre::eyre::{eyre, Result};
+use color_eyre::eyre::eyre;
+use color_eyre::eyre::Result;
 #[cfg(unix)]
 use log::debug;
 #[cfg(unix)]
