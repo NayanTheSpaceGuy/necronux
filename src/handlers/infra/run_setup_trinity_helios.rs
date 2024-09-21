@@ -1,29 +1,34 @@
+#[cfg(unix)]
 use color_eyre::eyre::{eyre, Result};
+#[cfg(unix)]
 use log::debug;
 #[cfg(unix)]
 use std::{env, path::PathBuf, process::Command};
+#[cfg(unix)]
 use std::{fs::Permissions, os::unix::fs::PermissionsExt};
 
 pub fn trinity_helios_part_one() -> Result<()> {
     #[cfg(unix)]
     {
-        setup_environment("one")
+        setup_environment("one")?
     }
     #[cfg(windows)]
     {
         println!("This setup is not supported yet for Windows.");
     }
+    Ok(())
 }
 
 pub fn trinity_helios_part_two() -> Result<()> {
     #[cfg(unix)]
     {
-        setup_environment("two")
+        setup_environment("two")?
     }
     #[cfg(windows)]
     {
         println!("This setup is not supported yet for Windows.");
     }
+    Ok(())
 }
 
 #[cfg(unix)]
